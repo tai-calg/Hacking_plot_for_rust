@@ -1,0 +1,64 @@
+Script started on 2022-02-02 13:25:52+00:00 [TERM="xterm" TTY="/dev/pts/0" COLUMNS="144" LINES="43"]
+#gdb -q target/release/first
+Reading symbols from target/release/first...done.
+(gdb) break main
+Breakpoint 1 at 0x8760
+(gdb) run
+Starting program: /root/src_rust/hacking/target/release/first 
+warning: Error disabling address space randomization: Operation not permitted
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Breakpoint 1, 0x0000564cf4373760 in main ()
+
+(gdb) info registers
+// breakポイントを設定して、runするとbreakポイントでとまる。そこまでの プロセッサのすべてのレジスタと現在の状態を表示させている
+/*
+汎用的に使用できるレジスタ。
+以下の種類が存在する。
+
+RAX, RBX, RCX, RDX, RSI, RDI, RSP, RBP, R8 ~ R15
+システムコール番号は RAX に指定し、以下の順番でシステムコールの引数をとるということである。
+https://tryunoo.hatenablog.com/entry/2017/10/15/220724 
+
+*/
+
+rax            0x564cf4373760      94888514762592
+rbx            0x0                 0
+rcx            0x7f16958e7718      139734975149848
+rdx            0x7ffe9ea7d5b8      140731560220088
+rsi            0x7ffe9ea7d5a8      140731560220072
+rdi            0x1                 1
+rbp            0x564cf43a6620      0x564cf43a6620 <__libc_csu_init>
+rsp            0x7ffe9ea7d4c8      0x7ffe9ea7d4c8
+r8             0x7f16958e8d80      139734975155584
+r9             0x7f16958e8d80      139734975155584
+r10            0x16                22
+r11            0x0                 0
+r12            0x564cf4373490      94888514761872
+r13            0x7ffe9ea7d5a0      140731560220064
+r14            0x0                 0
+r15            0x0                 0
+rip            0x564cf4373760      0x564cf4373760 <main>
+eflags         0x246               [ PF ZF IF ]
+cs             0x33                51
+ss             0x2b                43
+ds             0x0                 0
+es             0x0                 0
+fs             0x0                 0
+gs             0x0                 0
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 96] will be killed.
+
+Quit anyway? (y or n) 
+Please answer y or n.
+A debugging session is active.
+
+	Inferior 1 [process 96] will be killed.
+
+Quit anyway? (y or n) y
+# 
+
+Script done on 2022-02-02 13:27:03+00:00 [COMMAND_EXIT_CODE="0"]
