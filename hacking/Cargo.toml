@@ -10,3 +10,8 @@ edition = "2021"
 [[bin]]
 name = "first"
 path = "src/first.rs"
+
+[[bin]]
+name = "char_array"
+path = "src/char_array.rs"
+

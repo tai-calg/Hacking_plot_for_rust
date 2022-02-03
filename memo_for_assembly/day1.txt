@@ -62,3 +62,9 @@ Quit anyway? (y or n) y
 # 
 
 Script done on 2022-02-02 13:27:03+00:00 [COMMAND_EXIT_CODE="0"]
+
+
+(gdb) break first::main
+(gdb) disassemble first::main
+// ここをmainにするとだめなので注意(file名::関数名)
+// 追記。一回目だけfile名::mainらしい。その後はmainじゃないとだめ

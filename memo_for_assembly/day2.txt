@@ -1,0 +1,68 @@
+
+docker run -it --name sakuborust --cap-add=SYS_PTRACE --security-opt="seccomp=unconfined"  -v [~コンテナに反映(マウント)させたい自分のマシンのディレクトリ]:/root/src_rust [REPOSITRY名]:[TAG] /bin/bash
+//docker container を新しくつくる
+
+//rust-gdb -q src_rust/hacking/target/release/first
+ //スタート
+ rustc -g ./src/first.rs //このディレクトリ内にコンパイルしたファイルを作成
+ rust-gdb ./first
+//スタート: こっちのほうがでバックしやすい
+
+ //命令ポインタレジスタはrip. ripレジスタが次の命令のアドレスを示す.本のeipに該当
+
+
+(gdb) x/x $rsp //rspがアドレス。＄でアドレスの中身をみる。x/xはexamine/x の略で、アドレスの中身をみる。
+(gdb) x/4xb $rsp //1ワード＝4バイト。 b がバイトを表す。これは4ワード分表示. リトルエンディアンに注意
+// b , h = 2b , w = 4b , g = 8b , x = 16b
+(gdb) x/12xb $rsp
+0x7ffec5963e88: 0x9b    0x00    0x0c    0x67    0x0f    0x7f    0x00    0x00
+0x7ffec5963e90: 0x00    0x00    0x00    0x00
+(gdb) x/12xw $rsp
+0x7ffec5963e88: 0x670c009b      0x00007f0f      0x00000000      0x00000000
+0x7ffec5963e98: 0xc5963f68      0x00007ffe      0x00040000      0x00000001
+0x7ffec5963ea8: 0x5b885760      0x00005590      0x00000000      0x00000000
+
+
+
+(gdb) print $rsp
+$1 = (void *) 0x7fffffffeac8 
+//新しくgdb時の変数を定義
+
+(gdb) x/4xw $1
+0x7fffffffeac8: 0xf7de209b      0x00007fff      0x00000000      0x00000000
+
+(gdb) disass main
+...
+0x000055555555c76e <+14>:    mov    QWORD PTR [rsp],rax
+//rspのアドレスから8バイト分の箇所に,raxの値をmov。
+// copy rax to rsp address with 8 bytes
+
+
+
+(gdb) i r rip
+rip            0x55555555c772      0x55555555c772 <main+18>
+(gdb) nexti
+0x000055555555c779 in main ()
+(gdb) i r rip
+rip            0x55555555c779      0x55555555c779 <main+25>
+//nextiでripのアドレスを実行して次の命令に進める。
+//全体像をみたいならdisass main するといい
+(gdb) x/i $rip 
+=> 0x55555555c779 <main+25>:    mov    rdi,rsp
+// x/i でアセンブラ表記で表示してくれる
+
+(gdb) x/4xw &pstr_a
+0x7fffffffe820: 0x55591057      0x00005555      0x0000000c      0x00000000
+//&スクリプトの変数名  でアドレスと中身を表示
+//困ったらx/4xw
+(gdb) print &pstr_a
+$1 = (*const str *) 0x7fffffffe820
+(gdb) print &psliceb
+$2 = (i32 **) 0x7fffffffe830
+//このように&ポインタにすればアドレスのアドレスが$2に入る
+(gdb) print *psliceb
+$5 = 1
+//デリファレンスも可能
+
+
+
