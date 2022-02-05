@@ -5,7 +5,7 @@ docker run -it --name sakuborust --cap-add=SYS_PTRACE --security-opt="seccomp=un
 //rust-gdb -q src_rust/hacking/target/release/first
  //スタート
  rustc -g ./src/first.rs //このディレクトリ内にコンパイルしたファイルを作成
- rust-gdb ./first
+ rust-gdb -q ./first
 //スタート: こっちのほうがでバックしやすい
 
  //命令ポインタレジスタはrip. ripレジスタが次の命令のアドレスを示す.本のeipに該当
