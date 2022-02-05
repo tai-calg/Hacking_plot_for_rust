@@ -2,6 +2,8 @@
 スタックは上から下なので氷柱のようなイメージ
 sub で氷柱が伸びる、(スタックが更新)
 
+
+
 (gdb) break main
 Breakpoint 1 at 0xd2b0
 (gdb) where
