@@ -1,3 +1,7 @@
+
+スタックは上から下なので氷柱のようなイメージ
+sub で氷柱が伸びる、(スタックが更新)
+
 (gdb) break main
 Breakpoint 1 at 0xd2b0
 (gdb) where
@@ -33,3 +37,54 @@ breakで止まってるのを進める
 $2 = (alloc::vec::Vec<alloc::string::String, alloc::alloc::Global> *) 0x7fffffffe8c0
 0x7fffffffe8c0: 0x555aaa40      0x00005555      0x00000002
 (gdb) x/4xw 0x7fffffffe8c0
+
+--- 
+
+(gdb) b main
+Note: breakpoint 1 also set at pc 0x55555555b540.
+Breakpoint 2 at 0x55555555b540
+(gdb) n
+The program is not being run.
+(gdb) run
+Starting program: /root/src_rust/hacking/test_stack 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Breakpoint 1, 0x000055555555b540 in main ()
+(gdb) n
+Single stepping until exit from function main,
+which has no line number information.
+__libc_start_main (main=0x55555555b540 <main>, argc=1, argv=0x7fffffffeb98, init=<optimized out>, 
+    fini=<optimized out>, rtld_fini=<optimized out>, stack_end=0x7fffffffeb88) at ../csu/libc-start.c:342
+342     ../csu/libc-start.c: No such file or directory.
+(gdb) disas
+Dump of assembler code for function __libc_start_main:
+   0x00007ffff7de1fb0 <+0>:     push   r14
+   0x00007ffff7de1fb2 <+2>:     xor    eax,eax
+   0x00007ffff7de1fb4 <+4>:     push   r13
+   0x00007ffff7de1fb6 <+6>:     push   r12
+   0x00007ffff7de1fb8 <+8>:     push   rbp
+   0x00007ffff7de1fb9 <+9>:     mov    rbp,rcx
+   0x00007ffff7de1fbc <+12>:    push   rbx
+   0x00007ffff7de1fbd <+13>:    sub    rsp,0x90
+   0x00007ffff7de1fc4 <+20>:    mov    QWORD PTR [rsp+0x8],rdx
+   0x00007ffff7de1fc9 <+25>:    mov    rdx,QWORD PTR [rip+0x196f70]        # 0x7ffff7f78f40
+   0x00007ffff7de1fd0 <+32>:    mov    QWORD PTR [rsp+0x18],rdi
+   0x00007ffff7de1fd5 <+37>:    mov    DWORD PTR [rsp+0x14],esi
+   0x00007ffff7de1fd9 <+41>:    test   rdx,rdx
+   0x00007ffff7de1fdc <+44>:    je     0x7ffff7de1fe7 <__libc_start_main+55>
+   0x00007ffff7de1fde <+46>:    mov    edx,DWORD PTR [rdx]
+   0x00007ffff7de1fe0 <+48>:    xor    eax,eax
+   0x00007ffff7de1fe2 <+50>:    test   edx,edx
+   0x00007ffff7de1fe4 <+52>:    sete   al
+   0x00007ffff7de1fe7 <+55>:    mov    DWORD PTR [rip+0x1971b3],eax        # 0x7ffff7f791a0 <__libc_multiple_libcs>
+   0x00007ffff7de1fed <+61>:    test   r9,r9
+   0x00007ffff7de1ff0 <+64>:    je     0x7ffff7de1ffe <__libc_start_main+78>
+   0x00007ffff7de1ff2 <+66>:    xor    edx,edx
+   0x00007ffff7de1ff4 <+68>:    xor    esi,esi
+   0x00007ffff7de1ff6 <+70>:    mov    rdi,r9
+   0x00007ffff7de1ff9 <+73>:    call   0x7ffff7df81b0 <__GI___cxa_atexit>
+   0x00007ffff7de1ffe <+78>:    mov    rdx,QWORD PTR [rip+0x196e5b]        # 0x7ffff7f78e60
+   0x00007ffff7de2005 <+85>:    mov    ebx,DWORD PTR [rdx]
+   0x00007ffff7de2007 <+87>:    and    ebx,0x2
+--Type <RET> for more, q to quit, c to continue without paging--
