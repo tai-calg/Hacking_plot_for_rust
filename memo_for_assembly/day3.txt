@@ -4,6 +4,7 @@ sub で氷柱が伸びる、(スタックが更新)
 
 
 
+
 (gdb) break main
 Breakpoint 1 at 0xd2b0
 (gdb) where
@@ -11,7 +12,7 @@ No stack.
 (gdb) cont
 The program is not being run.
 (gdb) run hello
-Starting program: /root/src_rust/hacking/com_line_args hello
+Starting program: root/src_rust/hacking/com_line_args hello
 [Thread debugging using libthread_db enabled]
 Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
 

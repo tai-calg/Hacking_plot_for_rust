@@ -15,3 +15,11 @@ path = "src/first.rs"
 name = "char_array"
 path = "src/char_array.rs"
 
+[[bin]]
+name = "heap_example"
+path = "src/heap_example.rs"
+
+[[bin]]
+name = "test_stack"
+path = "src/test_stack.rs"
+

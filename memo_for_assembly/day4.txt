@@ -1,0 +1,63 @@
+
+ ./src/heap_example.rs
+
+ let a = Box::new(5);
+ let pa : * const Box<i32>= &a as *const Box<i32>;
+
+ ヒープについて
+(gdb) n
+Single stepping until exit from function main,
+which has no line number information.
+
+Breakpoint 2, heap_example::main () at ./src/heap_example.rs:3
+3           let pa : * const Box<i32>= &a as *const Box<i32>;
+    (gdb) disas   
+    Dump of assembler code for function heap_example::main:
+       0x000055555555d2c0 <+0>:     sub    rsp,0x108
+       0x000055555555d2c7 <+7>:     mov    DWORD PTR [rsp+0xf4],0x5
+       0x000055555555d2d2 <+18>:    mov    esi,0x4
+       0x000055555555d2d7 <+23>:    mov    rdi,rsi
+       0x000055555555d2da <+26>:    call   0x55555555c5d0 <alloc::alloc::exchange_malloc>
+       0x000055555555d2df <+31>:    mov    QWORD PTR [rsp+0x28],rax
+       0x000055555555d2e4 <+36>:    jmp    0x55555555d30c <heap_example::main+76>
+       0x000055555555d2e6 <+38>:    mov    rcx,rax
+       0x000055555555d2e9 <+41>:    mov    eax,edx
+       0x000055555555d2eb <+43>:    mov    QWORD PTR [rsp+0xf8],rcx
+       0x000055555555d2f3 <+51>:    mov    DWORD PTR [rsp+0x100],eax
+       0x000055555555d2fa <+58>:    mov    rax,QWORD PTR [rsp+0xf8]
+       0x000055555555d302 <+66>:    mov    QWORD PTR [rsp+0x20],rax
+
+       // ここからBox::new
+       0x000055555555d307 <+71>:    jmp    0x55555555d476 <heap_example::main+438>
+       0x000055555555d30c <+76>:    mov    rcx,QWORD PTR [rsp+0x28]
+       0x000055555555d311 <+81>:    mov    rax,rcx
+       0x000055555555d314 <+84>:    mov    DWORD PTR [rcx],0x5 // a
+       0x000055555555d31a <+90>:    mov    QWORD PTR [rsp+0x30],rax // pa 
+       0x000055555555d31f <+95>:    lea    rax,[rsp+0x30]
+       0x000055555555d324 <+100>:   mov    QWORD PTR [rsp+0x38],rax
+       0x000055555555d329 <+105>:   lea    rax,[rsp+0x38]
+       0x000055555555d32e <+110>:   mov    QWORD PTR [rsp+0x80],rax
+       0x000055555555d336 <+118>:   mov    rdi,QWORD PTR [rsp+0x80]
+       0x000055555555d33e <+126>:   mov    QWORD PTR [rsp+0xd0],rdi
+       0x000055555555d346 <+134>:   lea    rsi,[rip+0xfffffffffffffd53]        # 0x55555555d0a0 <<*const T as core::fmt::Debug>::fmt>
+
+
+
+
+(gdb) print pa
+$5 = (i32 **) 0x7fffffffe8f0
+(gdb) print a
+$6 = (i32 *) 0x5555555a39e0
+(gdb) print *a
+$7 = 5
+(gdb) print *pa
+$8 = (i32 *) 0x5555555a39e0
+(gdb) print &pa
+$10 = (i32 ***) 0x7fffffffe8f8
+(gdb) print main
+$11 = {fn ()} 0x55555555d2c0 <heap_example::main>
+(gdb) print &&pa
+syntax error in expression, near `&&pa'.
+// ヒープは､低アドレスから高位アドレスへ
+// スタックの逆
+// 7ff... がスタックで , 555...がヒープ
