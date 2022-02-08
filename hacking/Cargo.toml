@@ -6,6 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+libc = "0.2"
+users = "0.11.0"
 
 [[bin]]
 name = "first"
@@ -23,3 +25,6 @@ path = "src/heap_example.rs"
 name = "test_stack"
 path = "src/test_stack.rs"
 
+[[bin]]
+name = "notetaker"
+path = "src/notetaker.rs"

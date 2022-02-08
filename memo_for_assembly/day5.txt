@@ -1,0 +1,65 @@
+//新しくユーザーを作成する
+
+root@e5021176a6a8:~/src_rust/hacking# adduser jose
+Adding user `jose' ...
+Adding new group `jose' (1000) ...
+Adding new user `jose' (1000) with group `jose' ...
+Creating home directory `/home/jose' ...
+Copying files from `/etc/skel' ...
+New password: 
+Retype new password: 
+passwd: password updated successfully
+Changing the user information for jose
+Enter the new value, or press ENTER for the default
+        Full Name []: jose
+        Room Number []:   
+        Work Phone []: 
+        Home Phone []: 
+        Other []: 
+Is the information correct? [Y/n] y
+root@e5021176a6a8:~/src_rust/hacking# su jose
+jose@e5021176a6a8:/root/src_rust/hacking$ 
+
+// exit　でrootに戻る
+
+root@e5021176a6a8:~/src_rust/hacking#  chown root:root ./target/release/notetaker
+
+root@e5021176a6a8:~/src_rust/hacking# chmod  u+s ./target/release/notetaker
+root@e5021176a6a8:~/src_rust/hacking# ls -l ./target/release/notetaker
+-rwsr-xr-x 2 root root 3685576 Feb  8 10:56 ./target/release/notetaker
+
+root@e5021176a6a8:~/src_rust/hacking# su jose
+jose@e5021176a6a8:/root/src_rust/hacking$ ./target/release/notetaker "this is test of multiuser notes"
+thread 'main' panicked at 'couldn't open /var/notes: No such file or directory (os error 2)', src/notetaker.rs:19:21
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+jose@e5021176a6a8:/root/src_rust/hacking$ exit
+
+--- 
+
+root@e5021176a6a8:~/src_rust/hacking# ./target/release/notetaker "this is test of multiuser notes"
+userid : [0, 0, 0, 0]
+contents : [116, 104, 105, 115, 32, 105, 115, 32, 116, 101, 115, 116, 32, 111, 102, 32, 109, 117, 108, 116, 105, 117, 115, 101, 114, 32, 110, 111, 116, 101, 115]
+len_contents: 31
+メモが保存されました
+jose@e5021176a6a8:/root/src_rust/hacking$  hexdump -C /var/notes 
+00000000  00 00 00 00 0a 74 68 69  73 20 69 73 20 74 65 73  |.....this is tes|
+00000010  74 20 6f 66 20 6d 75 6c  74 69 75 73 65 72 20 6e  |t of multiuser n|
+00000020  6f 74 65 73 0a 00 00 00  00 00 00 00 1f 0a        |otes..........|
+0000002e
+
+// 先頭の00 00 00 00が userid に相当（リトルエンディアンである）
+// 0a 74 68 69 ... が contents に相当
+// [error] なぜか, uid がjoseの方で実行しても0を受け取る...get_current_gid()
+
+
+// sudoできる人の権限設定
+root@e5021176a6a8:~/src_rust/hacking# usermod -aG sudo jose
+
+jose@e5021176a6a8:/root/src_rust/hacking$ sudo ./target/release/notetaker "this is test of multiuser notes"
+[0, 0, 0, 0]
+[116, 104, 105, 115, 32, 105, 115, 32, 116, 101, 115, 116, 32, 111, 102, 32, 109, 117, 108, 116, 105, 117, 115, 101, 114, 32, 110, 111, 116, 101, 115]
+31
+メモが保存されました
+jose@e5021176a6a8:/root/src_rust/hacking$  ./target/release/notetaker "this is test of multiuser notes"
+thread 'main' panicked at 'called `Result::unwrap()` on an `Err` value: Os { code: 13, kind: PermissionDenied, message: "Permission denied" }', src/notetaker.rs:20:61
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
