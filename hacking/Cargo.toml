@@ -28,3 +28,7 @@ path = "src/test_stack.rs"
 [[bin]]
 name = "notetaker"
 path = "src/notetaker.rs"
+
+[[bin]]
+name = "overflow_example"
+path = "src/overflow_example.rs"

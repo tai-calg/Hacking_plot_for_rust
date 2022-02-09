@@ -23,7 +23,7 @@ fn main (){
     
     // write to file
     //メモの前にユーザーIDを書き込む
-    let userid = UsersCache::new().get_current_uid();
+    let userid = UsersCache::new().get_effective_uid(); //[bug] joseで実行しても1000を返さない。
     println!("{}", userid);
     fd.write(&userid.to_le_bytes()).unwrap(); //書き込み、詰まった場所
     fd.write(b"\n").unwrap();
@@ -41,6 +41,11 @@ fn main (){
     
     //close file
     println!("メモが保存されました");
+
+let mut cache = UsersCache::new();
+let uid = cache.get_effective_uid();
+let user = cache.get_user_by_uid(uid).unwrap();
+println!("Hello again, {} with {}!", user.name().to_string_lossy(),uid);
 
     
 

@@ -21,6 +21,7 @@ root@e5021176a6a8:~/src_rust/hacking# su jose
 jose@e5021176a6a8:/root/src_rust/hacking$ 
 
 // exit　でrootに戻る
+// uid と実効uidは別々。sudoしたら実効uidがrootになる(uidはjose)
 
 root@e5021176a6a8:~/src_rust/hacking#  chown root:root ./target/release/notetaker
 
